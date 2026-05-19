@@ -21,14 +21,25 @@ app = Flask(__name__)
 
 app.secret_key = 'ImInLoveWithRaff'
 
-@app.route("/")
+@app.route("/" , methods  =["POST" , "GET"])
 def home():
-    return render_template('signup.html')
+
+    if request.method == "GET":
+        return render_template("login.html")
+
+    # form_data = request.form
+    # username = form_data.get("username")
+    # password = form_data.get("password")
+
+    return "Logged In"
 
 
 
-@app.route("/signup", methods=["POST"])
+@app.route("/signup", methods=["POST" , "GET"])
 def signup():
+
+    if request.method == "GET":
+        return render_template("signup.html")
 
     success = True
 
@@ -42,10 +53,6 @@ def signup():
     if not Is_present(username):
         success = False
         flash("No Username Given")
-
-    if not Is_present(email):
-        success = False
-        flash("No Email Given")
 
     if not Is_present(password):
         success = False
@@ -68,9 +75,11 @@ def signup():
         flash("Passwords Do Not Match")
 
     if not success:
-        return redirect("/")
+        return redirect("/signup")
     
 
     return "Account Created!"
+
+# def login():
 
 app.run(debug=True)
