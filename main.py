@@ -4,22 +4,23 @@ from flask import Flask, flash, redirect, render_template, request
 
 
 
+from database import DatabaseHandler
 from lib.Is_matching import Is_matching
 from lib.Is_length_valid import Is_length_valid
 from lib.Is_present import Is_present
-
+from werkzeug.security import generate_password_hash
 
 
 app = Flask(__name__)
 
-# Source - https://stackoverflow.com/a/54433731
-# Posted by Grey Li, modified by community. See post 'Timeline' for change history
-# Retrieved 2026-05-18, License - CC BY-SA 4.0
 
 
 
 
 app.secret_key = 'ImInLoveWithRaff'
+
+db = DatabaseHandler()
+db.create_tables()
 
 @app.route("/" , methods  =["POST" , "GET"])
 def home():
@@ -62,6 +63,9 @@ def signup():
         success = False
         flash("No Password Confirmation Given")
 
+    if not Is_present(email):
+        email = None
+
     if not Is_length_valid(username , 4):
         success = False
         flash("Username must be bewteen 4 and 64 characters")
@@ -77,8 +81,15 @@ def signup():
     if not success:
         return redirect("/signup")
     
+    hashed_pswd = generate_password_hash(password)
+    
+    commit_success , message = db.create_user(username, hashed_pswd, email)
 
+    if not commit_success:
+        return message
+    
     return "Account Created!"
+
 
 # def login():
 

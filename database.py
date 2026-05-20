@@ -12,12 +12,12 @@ class DatabaseHandler:
 
         CREATE TABLE IF NOT EXISTS user (
                    
-                   username TEXT PRIMARY KEY NOT NULL
+                   u_id INTEGER PRIMARY KEY AUTOINCREMENT,          
+                   username TEXT NOT NULL UNIQUE,
                    password TEXT NOT NULL,
+                   email TEXT,
                    CHECK( length(password) >= 8))
-                   
-
-
+                
 
 """)
 
@@ -26,8 +26,23 @@ class DatabaseHandler:
 
     #CRUD
 
-    def create_user(self):
-        pass
+    def create_user(self , username, password, email):
+        try:
+            cx = sql.connect(self.database_name)
+            cu = cx.cursor()
+            
+
+
+            cu.execute("""INSERT INTO user (username, password, email) VALUES (?,?,?)""", (username, password, email))
+            cx.commit()
+
+
+            
+            return True , "account succesfully created"
+        except:
+            return False, "an error has occured"
+        finally:
+            cx.close
 
     def retrieve_user(self):
         pass
