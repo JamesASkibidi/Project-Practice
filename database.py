@@ -44,7 +44,8 @@ class DatabaseHandler:
         finally:
             cx.close
 
-    def retrieve_user(self):
+    def retrieve_user(self , username):
+        
         pass
 
     def update_user(self):
@@ -52,3 +53,21 @@ class DatabaseHandler:
 
     def delete_user(self):
         pass
+
+    def find_password(self, username):
+        try:
+            cx = sql.connect(self.database_name)
+            cu = cx.cursor()
+            
+
+            cu.execute("""SELECT password FROM user WHERE username = ?""" , (username, ))
+
+
+            results = cu.fetchone()
+            
+            print(results)
+            return True, results
+        except:
+            return False ,"Authentication Failure"
+        finally:
+            cx.close()

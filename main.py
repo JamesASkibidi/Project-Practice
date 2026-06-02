@@ -1,21 +1,13 @@
 from flask import Flask, flash, redirect, render_template, request 
 
-
-
-
-
 from database import DatabaseHandler
 from lib.Is_matching import Is_matching
 from lib.Is_length_valid import Is_length_valid
+from lib.Is_password_valid import Is_password_valid
 from lib.Is_present import Is_present
-from werkzeug.security import generate_password_hash
-
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-
-
-
-
 
 app.secret_key = 'ImInLoveWithRaff'
 
@@ -27,14 +19,29 @@ def home():
 
     if request.method == "GET":
         return render_template("login.html")
-
-    # form_data = request.form
-    # username = form_data.get("username")
-    # password = form_data.get("password")
-
-    return "Logged In"
+    
+    if request.method == "POST":
 
 
+
+        form_data = request.form
+        username = form_data.get("username")
+        given_password = form_data.get("username")
+
+        success , password_hash=  db.find_password(username)
+
+        if not success or password_hash == None:
+            flash("Authentication error , please try again")
+            return redirect("/")
+        
+        if not check_password_hash(password_hash[0], given_password):
+            flash("Authentication error , incorrect password")
+            return redirect("/")
+
+
+        return redirect("/dashboard")
+
+    
 
 @app.route("/signup", methods=["POST" , "GET"])
 def signup():
@@ -70,9 +77,10 @@ def signup():
         success = False
         flash("Username must be bewteen 4 and 64 characters")
 
-    if not Is_length_valid(password , 8):
+    pswd_success , message = Is_password_valid(password)
+    if not pswd_success:
         success = False
-        flash("Password Does Not Meet Requirements")
+        flash(message)
 
     if not Is_matching(password , re_password):
         success = False
@@ -86,11 +94,17 @@ def signup():
     commit_success , message = db.create_user(username, hashed_pswd, email)
 
     if not commit_success:
-        return message
+        return render_template("sign_up_failure.html")
     
-    return "Account Created!"
+    return redirect("/dashboard")
 
 
-# def login():
+@app.route("/dashboard")
+
+def dashboard():
+    return render_template("dashboard.html")
+
+
+
 
 app.run(debug=True)
