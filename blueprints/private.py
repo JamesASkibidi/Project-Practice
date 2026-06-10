@@ -25,3 +25,7 @@ def logout():
     session.clear()
     #redirect to launch page
     return redirect("/")
+
+@private.route("/addTask")
+def addTask():
+    return render_template("add_task.html")

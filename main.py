@@ -3,18 +3,14 @@ from flask import Flask, flash, redirect, render_template, request, session
 from blueprints.private import private
 from blueprints.public import public
 from database import DatabaseHandler
-from lib.Is_matching import Is_matching
-from lib.Is_length_valid import Is_length_valid
-from lib.Is_password_valid import Is_password_valid
-from lib.Is_present import Is_present
-from werkzeug.security import check_password_hash, generate_password_hash
+
 
 app = Flask(__name__)
 
 app.secret_key = 'ImInLoveWithRaff'
 
-# db = DatabaseHandler()
-# db.create_tables()
+db = DatabaseHandler()
+db.create_tables()
 
 app.register_blueprint(public)
 app.register_blueprint(private)

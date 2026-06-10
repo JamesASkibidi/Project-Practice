@@ -17,7 +17,7 @@ db = DatabaseHandler()
 
 @public.before_request
 def auth_gate():
-    if Is_auth:
+    if Is_auth():
         return redirect("/dahsboard")
 
 @public.route("/" , methods  =["POST" , "GET"])
