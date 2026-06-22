@@ -1,17 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Dashboard</title>
-</head>
-<body>
+{% extends "base.html"%}
+{%block title%}
+Dashboard
+{%endblock%}
+
+
+{%block content%}
     <h1>Dashboard</h1>
     <h2>Welcome {{session.get("current_user")}}</h2>
     
     <logout>
         <a href  = "/logout"> Log Out</a>
     </logout>
-</body>
-</html>
+    
+    <addtask>
+        <a href = "/add_task"> Add Task</a>
+    </addtask>
+
+    <ul>
+        {% for task in tasks %}
+            <li> {{ task[1]  }}</li>
+        {% endfor %}
+
+    </ul>
+{%endblock%}

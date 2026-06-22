@@ -134,5 +134,26 @@ class DatabaseHandler:
         finally:
 
             cx.close()
+
+
+    def retrieve_id(self, username):
+
+        try:
+
+            cx = sql.connect(self.database_name)
+            cu = cx.cursor()
+
+            cu.execute("""
+                       SELECT u_id
+                       FROM user WEHRE username = ?""" , (username))
+            results = cu.fetchall()
+
+            return True, results
+            
+
+        except:
+
+            return False, []
+
         
         

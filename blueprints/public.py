@@ -105,4 +105,5 @@ def signup():
     
 
     session["current_user"] = username
+    # session["user_id"] = db.retrieve_id(username)
     return redirect("/dashboard")
